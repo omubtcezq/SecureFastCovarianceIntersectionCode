@@ -117,6 +117,7 @@ class MovingObjectSmartSensor(bnc.SensorBase):
         self.P = self.P - (K@S@K.T)
 
         saved_sim_output['sensor_estimates'][self._name].append((self.x, self.P))
+
         return self.truePrevState, measurement, self.x, self.P
     
     def getDataToSendToServer(self, t, p):
@@ -132,6 +133,21 @@ class MovingObjectSmartSensor(bnc.SensorBase):
         
         Pinv = np.linalg.inv(self.P)
         Pinvx = Pinv@self.x
+
+        # import sys
+        # sys.stdout.write(str(self.id) + "\n")
+        # sys.stdout.write("%.16f\n" % trace)
+        # for i in range(len(Pinvx)):
+        #     sys.stdout.write("%.16f" % Pinvx[i])
+        #     if i<len(Pinvx)-1:
+        #         sys.stdout.write(" ")
+        # sys.stdout.write("\n")
+        # for i in range(len(Pinv)):
+        #     for j in range(len(Pinv)):
+        #         sys.stdout.write("%.16f" % Pinv[i][j])
+        #         if j<len(Pinv)-1:
+        #             sys.stdout.write(" ")
+        #     sys.stdout.write("\n")
 
         phePinv = np.array([[enc.Add_PHE_Number(val) for val in r] for r in Pinv])
         phePinvx = np.array([enc.Add_PHE_Number(val) for val in Pinvx])
@@ -202,8 +218,8 @@ class FCIFusionServer(bnc.ServerBase):
         Pinv_fused_approx = sum([sensorDataList[i][3]*approxOmegas[i] for i in range(len(sensorDataList))])
         Pinvx_fused_approx = sum([sensorDataList[i][2]*approxOmegas[i] for i in range(len(sensorDataList))])
 
-        print('Exact solution: ', ['%1.4f'%i for i in omegas])
-        print('Approx solution:', ['%1.4f'%i for i in approxOmegas])
+        #print('Exact solution: ', ['%1.4f'%i for i in omegas])
+        #print('Approx solution:', ['%1.4f'%i for i in approxOmegas])
 
         return x_fused, P_fused, Pinvx_fused_approx, Pinv_fused_approx
 
@@ -227,6 +243,27 @@ class FusionQueryClient(bnc.ClientBase):
         x, P, Pinvx, Pinv = serverData
         approxP = np.linalg.inv(np.array([[val.get_number() for val in r] for r in Pinv]))
         approxX = approxP@np.array([val.get_number() for val in Pinvx])
+
+        # print('Pinvx')
+        # print(np.array([val.get_number() for val in Pinvx]))
+        # print('Pinv')
+        # print(np.array([[val.get_number() for val in r] for r in Pinv]))
+        # print('x')
+        # print(approxX)
+        # print('P')
+        # print(approxP)
+        import sys
+        for i in range(len(approxX)):
+            sys.stdout.write("%.16f" % approxX[i])
+            if i<len(approxX)-1:
+                sys.stdout.write(" ")
+        sys.stdout.write("\n")
+        for i in range(len(approxP)):
+            for j in range(len(approxP)):
+                sys.stdout.write("%.16f" % approxP[i][j])
+                if j<len(approxP)-1:
+                    sys.stdout.write(" ")
+            sys.stdout.write("\n")
 
         saved_sim_output['fusion_estimates'].append((x, P))
         saved_sim_output['secure_fusion_estimates'].append((approxX, approxP))
@@ -331,6 +368,8 @@ Y88b  d88P 888 888  888  888 d8b      Y88b  d88P Y8b.     Y88b.  Y88b 888 888 d8
 def setupSim():
     fig = plt.figure()
     ax = fig.add_subplot(111)
+
+    np.random.seed(0)
 
     # Process parameters
     q = 0.02 # Noise strength

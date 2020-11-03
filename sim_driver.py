@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import FCI_fusion_network as ntwrk
 
 # The number of time 'ticks' to run the simulation for, and whether to display logs and plots of the simulation
-NUM_TIME_TICKS = 50
+NUM_TIME_TICKS = 46
 # Whether or not we wish to display plotting - note requires the setupSim function to have been setup accordingly
 TO_PLOT = True
 
@@ -23,7 +23,7 @@ def runSim():
     # The simulation itself
     time = 0
     while time < NUM_TIME_TICKS:
-        print ('Sim time = ' + str(time))
+        print(str(time-1))#print ('Sim time = ' + str(time))
         trueState = next(groundTruth)
         # Readings are gotten by generating a reading from each of the sensors in the list created
         readings = [s.generateDataAndDisplay(time, trueState) for s in sensors]

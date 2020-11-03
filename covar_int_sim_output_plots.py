@@ -8,7 +8,7 @@ import other_helpers.plotting_helper as ph
 import covar_int_computation as fci
 
 # Matplotlib params
-SAVE_NOT_SHOW = True
+SAVE_NOT_SHOW = False
 
 if SAVE_NOT_SHOW:
     # Use to following to output latex friendly pictures. Note plt.show() will no longer work
@@ -229,20 +229,20 @@ for i in range(len(m3)):
     ax.plot([m3[i][0][0], m3[i][1][0]], [m3[i][0][2], m3[i][1][1]], c='lightgrey', linestyle='--', zorder=3)
 
 # FCI estimates
-split = list(zip(*sim_data['fusion_estimates']))
-estimates = split[0]
-errors = split[1]
+# split = list(zip(*sim_data['fusion_estimates']))
+# estimates = split[0]
+# errors = split[1]
 
-estimates2D = [np.array([e[0],e[2]]) for e in estimates]
-errors2D = [np.array([[p[0,0], p[2,0]], [p[0,2], p[2,2]]]) for p in errors]
+# estimates2D = [np.array([e[0],e[2]]) for e in estimates]
+# errors2D = [np.array([[p[0,0], p[2,0]], [p[0,2], p[2,2]]]) for p in errors]
 
-ax.scatter(None, None, c='r', marker='.', label=r'FCI estimate', zorder=4)
-for i in range(len(estimates)):
-    estimate = estimates2D[i]
-    error = errors2D[i]
+# ax.scatter(None, None, c='r', marker='.', label=r'FCI estimate', zorder=4)
+# for i in range(len(estimates)):
+#     estimate = estimates2D[i]
+#     error = errors2D[i]
 
-    ax.scatter(*estimate, c='r', marker='.')
-    ax.add_artist(ph.get_cov_ellipse(error, estimate, 2, fill=False, linestyle='-', edgecolor='r', zorder=4))
+#     ax.scatter(*estimate, c='r', marker='.')
+#     ax.add_artist(ph.get_cov_ellipse(error, estimate, 2, fill=False, linestyle='-', edgecolor='r', zorder=4))
 
 
 # Secure FCI estimates
